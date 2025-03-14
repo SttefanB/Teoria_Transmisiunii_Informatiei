@@ -1,0 +1,74 @@
+import numpy as np
+import heapq
+
+class Node:
+    def __init__(self,prob,symb,D):
+        self.prob=prob
+        self.symb=symb
+        for i in range(D):
+            self.i=None
+    def __lt__(self,other):
+        if self.prob<other.prob:
+            return self.prob<other.prob
+        elif self.symb<other.symb:
+            return self.symb>other.symb
+def build_tree(probabilities,symbols,D):
+    frunze=[]
+    while (len(symbols)-D)/(D-1) % 2 !=0:
+        symbols.append('')
+        probabilities.append(0)
+    for i in range(len(symbols)):
+        frunze.append(Node(probabilities[i],symbols[i],D))
+
+    heapq.heapify(frunze)
+    while(len(frunze)>1):
+        #first=heapq.heappop(frunze)
+        #second=heapq.heappop(frunze)
+        #third=heapq.heappop(frunze)
+        simboluri=''
+        probabilitati=0
+        copii=[]
+        for i in range(D):
+            nod=heapq.heappop(frunze)
+            simboluri+=str(nod.symb)
+            probabilitati+=nod.prob
+            copii.append(nod)
+        parinte=Node(probabilitati,simboluri,D)
+        for i in range(len(copii)):
+            parinte.i=copii[i]
+        heapq.heappush(frunze,parinte)
+    return frunze[0]
+def encode(dex,nod,cod,D):
+     #if nod.left is None and nod.right is None and nod.middle is None:
+      #    dex[nod.symb]=cod
+      Ok=True
+      for i in range(D):
+          if nod.i is not None:
+              Ok=False
+      if Ok==True:
+          dex[nod.symb]=cod
+      else:
+          for i in range(D):
+           encode(dex,nod.i,cod+str(i),D)
+def f(text,D):
+    dex={}
+    for i in text:
+        if i not in dex:
+            dex[i]=1
+        else:
+            dex[i]+=1
+    symb=list(dex.keys())
+    prob=list(dex.values())
+    for i in range(len(prob)):
+       prob[i]=prob[i]/len(text)
+    radacina=build_tree(prob,symb,D)
+    codul={}
+    encode(codul,radacina,'',D)
+    textul=''
+    for i in text:
+        textul+=codul[i]
+    return textul
+text='ANA ARE MERE'
+D=3
+print(f(text,D))
+    
