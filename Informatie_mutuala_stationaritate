@@ -1,0 +1,22 @@
+import numpy as np
+def calcul_entropie(v):
+    entropie=0
+    for i in range(len(v)):
+       entropie+=(-1)*v[i]*np.log2(v[i])
+    return entropie 
+def f(v,p):
+    informatie_mutuala=0
+    entropia_relativa=0
+    entropia_stationara=0
+    entropia_stationara=calcul_entropie(v)
+    for i in range(len(v)):
+            entropia_relativa+=v[i]*calcul_entropie(p[:,i])
+    
+    informatie_mutuala=entropia_stationara-entropia_relativa
+    return informatie_mutuala
+
+v=np.array([0.3,0.7])
+T=np.array([[0.5,0.5],[0.6,0.4]])
+informatie=0
+informatie=f(v,T)
+print(informatie)
